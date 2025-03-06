@@ -8,7 +8,7 @@ namespace WebCoreApi.Data
         {
         }
 
-        DbSet<Student> Students { get; set; }
+        public DbSet<User> Users { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Student>().HasData([new Student(){Address = "aaa",Email = "aaa@qq.cpm",Name = "aaa",Id=1},

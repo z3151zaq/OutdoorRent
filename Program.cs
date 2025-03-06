@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using WebCoreApi.Configurations;
 using WebCoreApi.Data;
 
@@ -13,8 +14,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddDbContext<MyDbContext>(options =>
 {
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("MyDBConnection"));
+//options.UseSqlServer(
+//    builder.Configuration.GetConnectionString("MyDBConnection"));
+    options.UseSqlite(builder.Configuration.GetConnectionString("sqliteConnection"));
 });
 
 var app = builder.Build();

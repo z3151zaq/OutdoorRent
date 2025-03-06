@@ -9,6 +9,7 @@ namespace WebCoreApi.Configurations
         public AutoMapperConfig()
         {
             CreateMap<StudentDTO, Student>().ReverseMap();
+            CreateMap<UserDTO, User>().ReverseMap();
         }
 
     }
