@@ -23,5 +23,6 @@ namespace WebCoreApi.Data
         public string Type { get; set; }
         public float Price { get; set; }
         public string Descriptions { get; set; }
+        public int Stock { get; set; }
     }
 }
