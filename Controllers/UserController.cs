@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 using WebCoreApi.Data;
 using WebCoreApi.Models;
 
@@ -9,25 +12,74 @@ namespace WebCoreApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;
-        public UserController(IMapper mapper)
+        private readonly MyDbContext _db;
+        public UserController(IMapper mapper, MyDbContext db)
         {
             _mapper = mapper;
+            _db = db;
         }
+        [Authorize]
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> GetList()
         {
-            var testUser = new User()
-            {
-                Id = 1,
-                Name = "test",
-                Age = 30
-            };
-            var dto = _mapper.Map<UserDTO>(testUser);
+            var users = await _db.Users
+                .Where(u => !u.Deleted)
+                .ToListAsync();
+            var dto = _mapper.Map<UserDTO>(users);
             return Ok(dto);
+        }
+
+        [HttpPost]
+        [Route("create")]
+        public IActionResult Create([FromBody] UserCreateDTO UserCreateDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            string CodeHash;
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(UserCreateDto.Code));
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                CodeHash = builder.ToString();
+            }
+
+
+            User user = new User
+            {
+                Name = UserCreateDto.Name,
+                Email = UserCreateDto.Email,
+                Codehash = CodeHash,
+                Age = UserCreateDto.Age,
+                Deleted = false,
+            };
+            _db.Users.Add(user);
+            _db.SaveChanges();
+            return new OkObjectResult(true);
+        }
+
+        [HttpPost]
+        [Route("delete")]
+        public IActionResult Delete([FromBody] UserDeleteDTO UserDeleteDto)
+        {
+            var user = _db.Users.Find(UserDeleteDto.Id);
+            if (user != null)
+            {
+                user.Deleted = true;
+                _db.Entry(user).State = EntityState.Modified;
+                _db.SaveChanges();
+            }
+            return Ok(true);
         }
     }
 }

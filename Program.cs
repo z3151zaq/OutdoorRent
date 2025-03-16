@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -6,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using WebCoreApi.Configurations;
 using WebCoreApi.Data;
+using WebCoreApi.Filtters;
 using WebCoreApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +16,10 @@ var configuration = builder.Configuration;
 // Add services to the container.
 
 builder.Services.AddSingleton<TokenService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(typeof(ApiResponseActionFilter));
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -83,8 +88,7 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseAuthentication();  // Add authentication middleware
 app.UseAuthorization();
-
-
+//app.UseApiResponseWrapper();
 app.MapControllers();
 
 app.Run();

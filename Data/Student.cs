@@ -25,15 +25,5 @@ namespace WebCoreApi.Data
         public string Descriptions { get; set; }
         public int Stock { get; set; }
     }
-    public class User
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Required]
-        public int Id { get; set; }
-
-        public int Age { get; set; }
-
-        public string Name { get; set; }
-    }
+    
 }
