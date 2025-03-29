@@ -10,8 +10,8 @@ using WebCoreApi.Data;
 namespace WebCoreApi.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20250329080624_AddLocation")]
-    partial class AddLocation
+    [Migration("20250329092525_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
