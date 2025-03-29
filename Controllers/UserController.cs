@@ -22,14 +22,14 @@ namespace WebCoreApi.Controllers
             _mapper = mapper;
             _db = db;
         }
-        [Authorize]
+        // [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetList()
         {
             var users = await _db.Users
                 .Where(u => !u.Deleted)
                 .ToListAsync();
-            var dto = _mapper.Map<UserDTO>(users);
+            var dto = _mapper.Map<List<UserDTO>>(users);
             return Ok(dto);
         }
 

@@ -8,8 +8,11 @@ namespace WebCoreApi.Configurations
     {
         public AutoMapperConfig()
         {
-            CreateMap<StudentDTO, Student>().ReverseMap();
-            CreateMap<UserDTO, User>().ReverseMap();
+            CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<Equipment, EquipmentDTO>().ForMember(dest => dest.Condition, opt =>
+                opt.MapFrom(src => src.Condition.ToString().ToLower())).ReverseMap();
+            CreateMap<Location, LocationDTO>()
+                .ForMember(dest => dest.ManagerName, opt => opt.MapFrom(src => src.Manager.Name)).ReverseMap(); 
         }
 
     }
