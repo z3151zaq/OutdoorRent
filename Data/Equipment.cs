@@ -15,7 +15,10 @@ public class Equipment
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
+    [Required]
+    [ForeignKey("Location")]
     public string Location { get; set; }
+    public Location LocationDetail { get; set; }
     public string Availability { get; set; }
     [Required(ErrorMessage = "equipment type is required")]
     public string Type { get; set; }

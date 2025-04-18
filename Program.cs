@@ -8,6 +8,7 @@ using System.Text;
 using WebCoreApi.Configurations;
 using WebCoreApi.Data;
 using WebCoreApi.Filtters;
+using WebCoreApi.Middleware;
 using WebCoreApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,6 +54,8 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddDbContext<MyDbContext>(options =>
 {
@@ -88,6 +91,9 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseAuthentication();  // Add authentication middleware
 app.UseAuthorization();
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<AnotherMiddleware>();
+
 //app.UseApiResponseWrapper();
 app.MapControllers();
 

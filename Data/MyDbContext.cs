@@ -20,6 +20,14 @@ namespace WebCoreApi.Data
             modelBuilder.Entity<Equipment>()
                 .Property(r => r.Condition)
                 .HasConversion<string>(); // 存储为字符串
+            modelBuilder.Entity<Location>()
+                .HasIndex(i=>i.Name)
+                .IsUnique(); // unique constraint
+            modelBuilder.Entity<Equipment>()
+                .HasOne(e => e.LocationDetail)
+                .WithMany()
+                .HasForeignKey(e => e.Location) // Equipment.Location 是 FK
+                .HasPrincipalKey(l => l.Name);  // Location.Name 是目标主键（不是 Id）
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebCoreApi.Data;
@@ -20,11 +21,16 @@ namespace WebCoreApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEquipList()
         {
-            var equips = await _db.Equipments
-                .Where(e => !e.Deleted)
+            // var equips = await _db.Equipments
+            //     .Where(e => !e.Deleted)
+            //     .ToListAsync();
+            // var dto = _mapper.Map<List<EquipmentDTO>>(equips);
+            var equipmentDtos = await _db.Equipments
+                .Include(e => e.LocationDetail)
+                .ThenInclude(l => l.Manager)
+                .ProjectTo<EquipmentDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
-            var dto = _mapper.Map<List<EquipmentDTO>>(equips);
-            return Ok(dto);
+            return Ok(equipmentDtos);
         }
         [HttpPost]
         [Route("create")]

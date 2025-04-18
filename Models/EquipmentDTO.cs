@@ -7,6 +7,8 @@ public class EquipmentDTO
 {
     public int Id { get; set; }
     public string Location { get; set; }
+    public int ManagerId { get; set; }
+    public string ManagerName { get; set; }
     public string Availability { get; set; }
     public string Type { get; set; }
     public float PricePerDay { get; set; }
