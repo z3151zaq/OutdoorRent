@@ -17,7 +17,11 @@ public class AutoMapperConfig : Profile
             .ForMember(dest => dest.ManagerId,
                 opt => opt.MapFrom(src => src.LocationDetail.Manager.Id))
             .ForMember(dest => dest.ManagerName,
-                opt => opt.MapFrom(src => src.LocationDetail.Manager.Name));
+                opt => opt.MapFrom(src => src.LocationDetail.Manager.Name))
+            .ForMember(dest => dest.TypeName,
+            opt => opt.MapFrom(src => src.Type.TypeName))
+            .ForMember(dest => dest.CategoryNames,
+                opt => opt.MapFrom(src => src.Type.EquipmentCategorys.Select(c=>c.CategoryName)));;
     }
 }
 

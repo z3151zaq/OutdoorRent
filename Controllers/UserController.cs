@@ -8,78 +8,78 @@ using System.Text;
 using WebCoreApi.Data;
 using WebCoreApi.Models;
 
-namespace WebCoreApi.Controllers
+namespace WebCoreApi.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+
+public class UserController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    
-    public class UserController : ControllerBase
+    private readonly IMapper _mapper;
+    private readonly MyDbContext _db;
+    public UserController(IMapper mapper, MyDbContext db)
     {
-        private readonly IMapper _mapper;
-        private readonly MyDbContext _db;
-        public UserController(IMapper mapper, MyDbContext db)
+        _mapper = mapper;
+        _db = db;
+    }
+    // [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> GetList()
+    {
+        var users = await _db.Users
+            .Where(u => !u.Deleted)
+            .ToListAsync();
+        var dto = _mapper.Map<List<UserDTO>>(users);
+        return Ok(dto);
+    }
+
+    [HttpPost]
+    [Route("create")]
+    public IActionResult Create([FromBody] UserCreateDTO UserCreateDto)
+    {
+        if (!ModelState.IsValid)
         {
-            _mapper = mapper;
-            _db = db;
+            return BadRequest(ModelState);
         }
-        // [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> GetList()
+
+        string CodeHash;
+        using (SHA256 sha256Hash = SHA256.Create())
         {
-            var users = await _db.Users
-                .Where(u => !u.Deleted)
-                .ToListAsync();
-            var dto = _mapper.Map<List<UserDTO>>(users);
-            return Ok(dto);
+            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(UserCreateDto.Code));
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                builder.Append(bytes[i].ToString("x2"));
+            }
+            CodeHash = builder.ToString();
         }
 
-        [HttpPost]
-        [Route("create")]
-        public IActionResult Create([FromBody] UserCreateDTO UserCreateDto)
+
+        User user = new User
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            Name = UserCreateDto.Name,
+            Email = UserCreateDto.Email,
+            Codehash = CodeHash,
+            Age = UserCreateDto.Age,
+            Deleted = false,
+        };
+        _db.Users.Add(user);
+        _db.SaveChanges();
+        return new OkObjectResult(true);
+    }
 
-            string CodeHash;
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(UserCreateDto.Code));
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                CodeHash = builder.ToString();
-            }
-
-
-            User user = new User
-            {
-                Name = UserCreateDto.Name,
-                Email = UserCreateDto.Email,
-                Codehash = CodeHash,
-                Age = UserCreateDto.Age,
-                Deleted = false,
-            };
-            _db.Users.Add(user);
+    [HttpPost]
+    [Route("delete")]
+    public IActionResult Delete([FromBody] UserDeleteDTO UserDeleteDto)
+    {
+        var user = _db.Users.Find(UserDeleteDto.Id);
+        if (user != null)
+        {
+            user.Deleted = true;
+            _db.Entry(user).State = EntityState.Modified;
             _db.SaveChanges();
-            return new OkObjectResult(true);
         }
-
-        [HttpPost]
-        [Route("delete")]
-        public IActionResult Delete([FromBody] UserDeleteDTO UserDeleteDto)
-        {
-            var user = _db.Users.Find(UserDeleteDto.Id);
-            if (user != null)
-            {
-                user.Deleted = true;
-                _db.Entry(user).State = EntityState.Modified;
-                _db.SaveChanges();
-            }
-            return Ok(true);
-        }
+        return Ok(true);
     }
 }
+

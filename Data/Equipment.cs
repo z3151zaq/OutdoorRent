@@ -19,9 +19,16 @@ public class Equipment
     [ForeignKey("Location")]
     public string Location { get; set; }
     public Location LocationDetail { get; set; }
+
+    
     public string Availability { get; set; }
-    [Required(ErrorMessage = "equipment type is required")]
-    public string Type { get; set; }
+    
+    [Required(ErrorMessage = "equipment type id is required")]
+    [ForeignKey("EquipmentType")]
+    public int TypeId { get; set; }
+    
+    public EquipmentType Type { get; set; }
+    
     [Required(ErrorMessage = "price is required")]
     public float PricePerDay { get; set; }
     public string Descriptions { get; set; }

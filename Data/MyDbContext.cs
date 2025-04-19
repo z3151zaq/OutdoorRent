@@ -11,6 +11,8 @@ namespace WebCoreApi.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Equipment> Equipments { get; set; }
         public DbSet<Location> Locations { get; set; }
+        public DbSet<EquipmentCategory> EquipmentCategories { get; set; }
+        public DbSet<EquipmentType> EquipmentTypes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Student>().HasData([new Student(){Address = "aaa",Email = "aaa@qq.cpm",Name = "aaa",Id=1},

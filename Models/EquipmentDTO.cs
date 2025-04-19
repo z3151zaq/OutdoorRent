@@ -9,8 +9,12 @@ public class EquipmentDTO
     public string Location { get; set; }
     public int ManagerId { get; set; }
     public string ManagerName { get; set; }
+    
+    public int TypeId { get; set; }
+    public string TypeName { get; set; }
+    public List<string> CategoryNames { get; set; }
+    
     public string Availability { get; set; }
-    public string Type { get; set; }
     public float PricePerDay { get; set; }
     public string Descriptions { get; set; }
     [EnumCaseInsensitiveValidationAttribute(typeof(ConditionEnum))]
