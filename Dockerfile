@@ -1,13 +1,14 @@
 # 使用官方 ASP.NET Core 运行时镜像作为基础
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
 # 构建阶段
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
 RUN dotnet publish -c Release -o /app/publish
+
 
 # 发布阶段
 FROM base AS final
