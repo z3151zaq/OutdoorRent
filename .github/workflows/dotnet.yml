@@ -43,4 +43,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/outdoor:latest
             docker stop outdoor || true
             docker rm outdoor || true
-            docker run -d --name outdoor -p 8080:80 ${{ secrets.DOCKER_USERNAME }}/outdoor:latest
+            docker run -d --name outdoor -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/outdoor:latest
