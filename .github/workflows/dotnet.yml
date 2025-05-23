@@ -4,12 +4,11 @@
 name: Build and Deploy Docker Image
 
 on:
-  
+  workflow_dispatch:
   push:
     branches:
       - main
       - master
-      - workflow_dispatch
 jobs:
   build-and-deploy:
 
