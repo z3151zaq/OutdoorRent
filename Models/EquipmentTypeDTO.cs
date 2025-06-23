@@ -25,3 +25,9 @@ public class EquipmentNewCategoryDTO
     public string CategoryName { get; set; }
     public int[] TypeIds { get; set; } = Array.Empty<int>();
 }
+
+public class EquipmentImageFormDTO
+{
+    public string FileName { get; set; }
+    public IFormFile File { get; set; }
+}

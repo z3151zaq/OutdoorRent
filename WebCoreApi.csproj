@@ -23,6 +23,7 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="Properties\新文件夹\" />
+    <Folder Include="Uploads\" />
   </ItemGroup>
 
 </Project>

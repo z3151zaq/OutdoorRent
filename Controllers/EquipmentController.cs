@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebCoreApi.Data;
 using WebCoreApi.Models;
+using WebCoreApi.Repository.Interfaces;
+using WebCoreApi.Services;
 
 namespace WebCoreApi.Controllers;
 
@@ -13,11 +15,15 @@ public class EquipmentController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly MyDbContext _db;
-    public EquipmentController(IMapper mapper, MyDbContext db)
+    private readonly EquipmentService _equipmentService;
+    
+    public EquipmentController(IMapper mapper, MyDbContext db, EquipmentService equipmentService)
     {
         _mapper = mapper;
         _db = db;
+        _equipmentService = equipmentService;
     }
+    
     [HttpGet]
     public async Task<IActionResult> GetEquipList()
     {
@@ -34,8 +40,7 @@ public class EquipmentController : ControllerBase
     {
         Equipment equip = _mapper.Map<Equipment>(equipment);
         equip.Deleted = false;
-        _db.Equipments.Add(equip);
-        _db.SaveChanges();
+        _equipmentService.AddEquipment(equip);
         return new OkObjectResult(true);
     }
 }

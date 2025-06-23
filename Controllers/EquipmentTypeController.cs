@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebCoreApi.Data;
@@ -31,7 +32,7 @@ public class EquipmentTypeController: ControllerBase
         if (newType.Id.HasValue)
         {
             record = await _db.EquipmentTypes
-                .Include(e => e.EquipmentCategorys) // 包含导航属性
+                .Include(e => e.EquipmentCategorys)
                 .FirstOrDefaultAsync(e => e.Id == newType.Id.Value);
 
             if (record != null)
@@ -110,5 +111,23 @@ public class EquipmentTypeController: ControllerBase
             CategoryName = record.CategoryName,
             TypeIds = record.EquipmentTypes.Select(t => t.Id).ToList(),
         });
+    }
+
+    [HttpPost]
+    [Route("image")]
+    public async Task<IActionResult> UploadImage([FromForm] EquipmentImageFormDTO form)
+    {
+        if (form.File == null || form.File.Length == 0)
+            return BadRequest("文件为空");
+        if (!Directory.Exists("Uploads"))
+        {
+            Directory.CreateDirectory("Uploads");
+        }
+        var filePath = Path.Combine("Uploads", form.FileName);
+        using (FileStream stream = new FileStream(filePath, FileMode.Create))
+        {
+            await form.File.CopyToAsync(stream);
+        }
+        return Ok("Upload success");
     }
 }

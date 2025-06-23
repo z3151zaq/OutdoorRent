@@ -9,6 +9,8 @@ using WebCoreApi.Configurations;
 using WebCoreApi.Data;
 using WebCoreApi.Filtters;
 using WebCoreApi.Middleware;
+using WebCoreApi.Repository;
+using WebCoreApi.Repository.Interfaces;
 using WebCoreApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,7 +56,9 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-
+// repository and service layer
+builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
+builder.Services.AddScoped<EquipmentService, EquipmentService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddDbContext<MyDbContext>(options =>
