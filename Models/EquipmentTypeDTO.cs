@@ -10,7 +10,7 @@ public class EquipmentNewTypeDTO
 {
     public int? Id { get; set; }
     public string TypeName { get; set; }
-    public int[] CategoryIds { get; set; } = Array.Empty<int>();
+    public int[]? CategoryIds { get; set; } = Array.Empty<int>();
 }
 
 public class EquipmentCategoryDTO

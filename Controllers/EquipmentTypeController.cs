@@ -19,6 +19,14 @@ public class EquipmentTypeController: ControllerBase
         _db = db;
         _mapper = mapper;
     }
+    [HttpGet]
+    [Route("type")]
+    public async Task<IActionResult> GetAllType()
+    {
+        var types = await _db.EquipmentTypes.ToListAsync();
+        return Ok(types);
+    }
+
     [HttpPost]
     [Route("type")]
     public async Task<IActionResult> AddNewType([FromBody]EquipmentNewTypeDTO newType)
