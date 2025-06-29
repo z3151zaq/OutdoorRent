@@ -26,6 +26,23 @@ public class EquipmentTypeController: ControllerBase
         var types = await _db.EquipmentTypes.ToListAsync();
         return Ok(types);
     }
+    [HttpGet]
+    [Route("category")]
+    public async Task<IActionResult> GetAllCategory()
+    {
+        var cats = await _db.EquipmentCategories.Include(c => c.EquipmentTypes).ToListAsync();
+        var result = cats.Select(c => new EquipmentCategoryDTO
+        {
+            Id = c.Id,
+            CategoryName = c.CategoryName,
+            EquipmentTypes = c.EquipmentTypes.Select(t => new EquipmentTypeDTO
+            {
+                Id = t.Id,
+                TypeName = t.TypeName
+            }).ToList()
+        }).ToList();
+        return Ok(result);
+    }
 
     [HttpPost]
     [Route("type")]
@@ -87,7 +104,7 @@ public class EquipmentTypeController: ControllerBase
         EquipmentCategory record;
         if (newCat.Id.HasValue)
         {
-            record = _db.EquipmentCategories.Find(newCat.Id.Value);
+            record = _db.EquipmentCategories.Include(c => c.EquipmentTypes).FirstOrDefault(c => c.Id == newCat.Id.Value);
             if (record != null)
             {
                 record.CategoryName = newCat.CategoryName;

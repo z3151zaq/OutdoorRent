@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WebCoreApi.Data;
 
 namespace WebCoreApi.Models
 {
@@ -8,6 +9,7 @@ namespace WebCoreApi.Models
         public int Age { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public List<UserRole> Roles { get; set; }
     }
     public class UserCreateDTO
     {
@@ -17,9 +19,15 @@ namespace WebCoreApi.Models
         public string Email { get; set; }
         [Required]
         public string Code { get; set; }
+        public List<UserRole> Roles { get; set; }
     }
     public class UserDeleteDTO
     {
         public int Id { get; set; }
+    }
+    public class GrantRoleDTO
+    {
+        public int Id { get; set; }
+        public List<UserRole> Roles { get; set; }
     }
 }

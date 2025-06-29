@@ -62,6 +62,7 @@ public class UserController : ControllerBase
             Codehash = CodeHash,
             Age = UserCreateDto.Age,
             Deleted = false,
+            Roles = UserCreateDto.Roles,
         };
         _db.Users.Add(user);
         _db.SaveChanges();
@@ -77,6 +78,19 @@ public class UserController : ControllerBase
         {
             user.Deleted = true;
             _db.Entry(user).State = EntityState.Modified;
+            _db.SaveChanges();
+        }
+        return Ok(true);
+    }
+    
+    [HttpPost]
+    [Route("grant")]
+    public IActionResult GrantRole([FromBody] GrantRoleDTO dto)
+    {
+        var user = _db.Users.Find(dto.Id);
+        if (user != null)
+        {
+            user.Roles = dto.Roles;
             _db.SaveChanges();
         }
         return Ok(true);

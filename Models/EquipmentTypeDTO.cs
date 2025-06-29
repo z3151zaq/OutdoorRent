@@ -17,6 +17,7 @@ public class EquipmentCategoryDTO
 {
     public int Id { get; set; }
     public string CategoryName { get; set; }
+    public List<EquipmentTypeDTO> EquipmentTypes { get; set; }
 }
 
 public class EquipmentNewCategoryDTO

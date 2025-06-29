@@ -87,11 +87,11 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // 自动迁移数据库
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<MyDbContext>();
-    db.Database.Migrate();  // 这里会自动应用数据库迁移（如果有的话）
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var db = scope.ServiceProvider.GetRequiredService<MyDbContext>();
+//     db.Database.Migrate();  // 这里会自动应用数据库迁移（如果有的话）
+// }
 // Configure the HTTP request pipeline.
 
 app.UseSwagger();
@@ -101,8 +101,8 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseAuthentication();  // Add authentication middleware
 app.UseAuthorization();
-app.UseMiddleware<RequestLoggingMiddleware>();
-app.UseMiddleware<AnotherMiddleware>();
+// app.UseMiddleware<RequestLoggingMiddleware>();
+// app.UseMiddleware<AnotherMiddleware>();
 
 //app.UseApiResponseWrapper();
 app.MapControllers();
