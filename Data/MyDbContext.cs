@@ -13,6 +13,8 @@ public class MyDbContext: DbContext
     public DbSet<Location> Locations { get; set; }
     public DbSet<EquipmentCategory> EquipmentCategories { get; set; }
     public DbSet<EquipmentType> EquipmentTypes { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<InventoryBooking>  InventoryBookings { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Equipment>()

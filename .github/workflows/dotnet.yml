@@ -43,4 +43,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/outdoor:latest
             docker stop outdoor || true
             docker rm outdoor || true
-            docker run -d --name outdoor -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/outdoor:latest
+            docker run -d --name outdoor -p 8080:8080 \
+              -e "ConnectionStrings__postgresqlConnection=${{ secrets.DB_CONNECTION }}" \
+              -e "SERVICEBUS__CONNECTIONSTRING=${{SERVICEBUS__CONNECTIONSTRING}}"
+              ${{ secrets.DOCKER_USERNAME }}/outdoor:latest

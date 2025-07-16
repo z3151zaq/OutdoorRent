@@ -12,8 +12,13 @@ using WebCoreApi.Middleware;
 using WebCoreApi.Repository;
 using WebCoreApi.Repository.Interfaces;
 using WebCoreApi.Services;
+using WebCoreApi.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 var configuration = builder.Configuration;
 
 // Add services to the container.
@@ -65,8 +70,9 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 {
 //options.UseSqlServer(
 //    builder.Configuration.GetConnectionString("MyDBConnection"));
-    options.UseSqlite(configuration.GetConnectionString("sqliteConnection"));
+    options.UseNpgsql(configuration.GetConnectionString("postgresqlConnection"));
 });
+
 // authorization
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -84,6 +90,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddAuthorization();
 
+// service bus
+builder.Services.Configure<ServiceBusConfig>(
+    builder.Configuration.GetSection("ServiceBus"));
+builder.Services.AddSingleton<OrderMessageSender>();
+builder.Services.AddHostedService<OrderProcessingWorker>();
 var app = builder.Build();
 
 // 自动迁移数据库
