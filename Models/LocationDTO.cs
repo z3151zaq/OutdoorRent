@@ -11,8 +11,9 @@ public class LocationDTO
     public string ManagerName { get; set; }
 }
 
-public class CreateLocationDTO
+public class CreateOrModifyLocationDTO
 {
+    public int? Id { get; set; }
     [Required]
     public string Name { get; set; }
     [Required]

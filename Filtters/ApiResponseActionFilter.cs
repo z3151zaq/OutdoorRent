@@ -20,6 +20,12 @@ public class ApiResponse<T>
 
 public class ApiResponseActionFilter : IActionFilter, IExceptionFilter
     {
+        private readonly ILogger<ApiResponseActionFilter> _logger;
+
+        public ApiResponseActionFilter(ILogger<ApiResponseActionFilter> logger)
+        {
+            _logger = logger;
+        }
         public void OnActionExecuting(ActionExecutingContext ctx)
         {
         }
@@ -35,6 +41,7 @@ public class ApiResponseActionFilter : IActionFilter, IExceptionFilter
         public void OnException(ExceptionContext context)
         {
             // exception handle logic
+            _logger.LogError(context.Exception, context.Exception.Message);
             var response = new ApiResponse<string>(context.Exception.Message,500, false);
             context.Result = new JsonResult(response)
             {
