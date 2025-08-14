@@ -1,4 +1,5 @@
 using WebCoreApi.Data;
+using WebCoreApi.Models;
 using WebCoreApi.Repository.Interfaces;
 
 namespace WebCoreApi.Services;
@@ -17,5 +18,17 @@ public class EquipmentService
     
     public void AddEquipment(Equipment equipment) {
         _repo.Add(equipment);
+    }
+
+    public void UpdateEquipment(Equipment equipment)
+    {
+        _repo.Update(equipment);
+    }
+
+    public void DeleteEquipment(int id)
+    {
+        Equipment equipment = _repo.GetById(id);
+        equipment.Deleted = true;
+        _repo.Update(equipment);
     }
 }

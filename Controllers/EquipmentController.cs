@@ -28,20 +28,68 @@ public class EquipmentController : ControllerBase
     public async Task<IActionResult> GetEquipList()
     {
         var equipmentDtos = await _db.Equipments
+            .Where(c=>c.Deleted == false)
             .Include(e => e.LocationDetail)
             .ThenInclude(l => l.Manager)
             .ProjectTo<EquipmentDTO>(_mapper.ConfigurationProvider)
             .ToListAsync();
         return Ok(equipmentDtos);
     }
-    [HttpPost]
-    [Route("create")]
-    public async Task<IActionResult> AddEquipment([FromBody] EquipmentDTO equipment)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetEquipById(int id)
     {
-        Equipment equip = _mapper.Map<Equipment>(equipment);
-        equip.Deleted = false;
-        _equipmentService.AddEquipment(equip);
-        return new OkObjectResult(true);
+        var equipment = _equipmentService.GetEquipment(id);
+        var dto = _mapper.Map<EquipmentDTO>(equipment);
+        if (equipment.Deleted)
+        {
+            throw new Exception("Equipment not exist");
+        }
+        else
+        {
+            return Ok(dto);
+        }
+
+        
+    }
+    [HttpPost]
+    [Route("modify")]
+    public async Task<IActionResult> AddEquipment([FromBody] AddOrModifyEquipmentDTO dto)
+    {
+        if (dto.Id == null)
+        {
+            Equipment equipment = new Equipment()
+            {
+                TypeId = dto.TypeId,
+                Location = dto.Location,
+                Condition = Enum.Parse<ConditionEnum>(dto.Condition, ignoreCase: true),
+                Descriptions = dto.Descriptions,
+                Availability = dto.Availability,
+                Deleted = false,
+            };
+            _equipmentService.AddEquipment(equipment);
+            return new OkObjectResult(equipment);
+        }
+        else
+        {
+            int id = dto.Id.Value;
+            Equipment equip = _equipmentService.GetEquipment(id);
+            equip.Availability = dto.Availability;
+            equip.Descriptions = dto.Descriptions;
+            equip.Condition = Enum.Parse<ConditionEnum>(dto.Condition, ignoreCase: true);
+            equip.Deleted = false;
+            equip.TypeId = dto.TypeId;
+            _equipmentService.UpdateEquipment(equip);
+            return new OkObjectResult(equip);
+        }
+        
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> DeleteEquipment([FromBody] DeleteEquipmentDTO dto)
+    {
+        int id = dto.Id;
+        _equipmentService.DeleteEquipment(id);
+        return Ok(id);
     }
 }
 

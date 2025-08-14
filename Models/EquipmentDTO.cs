@@ -21,6 +21,25 @@ public class EquipmentDTO
     public string Condition { get; set; }
 }
 
+public class AddOrModifyEquipmentDTO
+{
+    public int? Id { get; set; }
+    [Required]
+    public string Location { get; set; }
+    [Required]
+    public int TypeId { get; set; }
+    [EnumCaseInsensitiveValidationAttribute(typeof(ConditionEnum))]
+    public string Condition { get; set; }
+    public string Availability { get; set; }
+    public float PricePerDay { get; set; }
+    public string Descriptions { get; set; }
+}
+
+public class DeleteEquipmentDTO
+{
+    public int Id { get; set; }
+}
+
 public class EnumCaseInsensitiveValidationAttribute : ValidationAttribute
 {
     private readonly Type _enumType;

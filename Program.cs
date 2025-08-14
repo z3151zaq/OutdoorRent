@@ -21,6 +21,23 @@ builder.Configuration
     .AddEnvironmentVariables();
 var configuration = builder.Configuration;
 
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",  policy =>
+    {
+        policy.WithOrigins(
+                "https://frontend1.com",
+                "http://localhost:3000" // Dev
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();  // SignalR 必需;
+    });
+});
+
+// signalR service
+builder.Services.AddSignalR();
 // Add services to the container.
 
 builder.Services.AddSingleton<TokenService>();
@@ -96,6 +113,8 @@ builder.Services.Configure<ServiceBusConfig>(
 builder.Services.AddSingleton<OrderMessageSender>();
 builder.Services.AddHostedService<OrderProcessingWorker>();
 var app = builder.Build();
+//CORS
+app.UseCors("AllowSpecificOrigins");
 
 // 自动迁移数据库
 // using (var scope = app.Services.CreateScope())
@@ -112,6 +131,8 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseAuthentication();  // Add authentication middleware
 app.UseAuthorization();
+// hubs
+app.MapHub<OnlineMeetingHub>("/meeting").RequireCors("AllowSpecificOrigins");;
 // app.UseMiddleware<RequestLoggingMiddleware>();
 // app.UseMiddleware<AnotherMiddleware>();
 
