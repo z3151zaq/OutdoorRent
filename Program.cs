@@ -27,7 +27,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins",  policy =>
     {
         policy.WithOrigins(
-                "https://frontend1.com",
+                "https://myblog-fawn-phi.vercel.app",
+                "https://myblog-z3151zaqs-projects.vercel.app/",
+                "https://myblog-git-main-z3151zaqs-projects.vercel.app/",
                 "http://localhost:3000" // Dev
             )
             .AllowAnyHeader()
